@@ -1,3 +1,4 @@
+import { genToken } from "../Middleware/jwt.auth.js";
 import { User } from "../Models/User.models.js";
 import bcrypt, { genSalt } from 'bcrypt'
 
@@ -17,34 +18,27 @@ const signup = async (req, res) => {
   }
 };
 
-const Login = async (req ,res) =>{
+const Login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
+      return res.status(404).json({ success: false, message: "User not found"});
     }
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid credentials",
-      });
+      return res.status(400).json({ success: false,  message: "Invalid credentials"});
     }
-    res.status(200).json({
-      success: true,
-      message: "Login successfully",
-    });
+    const paylod = {
+      name: user.name,
+      email: user.email,
+    }
+    const token = genToken(paylod);
+    res.cookie('access_token', token, { httpOnly: true }).status(200).json({ success: true,  message: "Login successfully"})
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
-    console.log(error)
+    res.status(500).json({  success: false,  error: error.message});
+    console.log(error);
   }
-}
+};
 
 export {signup, Login}
