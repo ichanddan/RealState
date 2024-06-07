@@ -1,20 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Navbar,
   NavbarBrand,
   NavbarContent,
   NavbarItem,
-  Link,
   Button,
   Input,
+  Avatar,
 } from "@nextui-org/react";
 import { FaSearch } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 export default function Header() {
+  const [userLogin, setUserLogin] = useState(false);
   return (
     <Navbar>
       <NavbarBrand>
-        <p className="font-bold text-inherit">ACME</p>
+        <Link to="/">
+          <p className="font-bold  text-inherit">RealState</p>
+        </Link>
       </NavbarBrand>
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
         <Input
@@ -25,16 +29,28 @@ export default function Header() {
           className="max-w-xs"
         />
       </NavbarContent>
-      <NavbarContent justify="end">
-        <NavbarItem className="hidden lg:flex">
-          <Link href="#">Login</Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Button as={Link} color="primary" href="#" variant="flat">
-            Sign Up
-          </Button>
-        </NavbarItem>
-      </NavbarContent>
+      {userLogin == true ? (
+        <NavbarContent justify="end">
+          {" "}
+          <Link to="/profile">
+            <Avatar
+              isBordered
+              src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+            />
+          </Link>{" "}
+        </NavbarContent>
+      ) : (
+        <NavbarContent justify="end">
+          <NavbarItem className="hidden lg:flex">
+            <Link to="/login">Login</Link>
+          </NavbarItem>
+          <NavbarItem>
+            <Button as={Link} color="primary" to="/signup" variant="flat">
+              Sign Up
+            </Button>
+          </NavbarItem>
+        </NavbarContent>
+      )}
     </Navbar>
   );
 }
