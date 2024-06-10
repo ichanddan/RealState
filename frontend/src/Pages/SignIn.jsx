@@ -32,11 +32,11 @@ export default function SignIn() {
         const data = await res.json();
         if(data.success===false){
           dispatch(signInFailure(data.message));
-          toast.error("Login faild invalid user or password", {
+          toast.error("invalid user or password", {
             position: "top-right",
         });
       }else{
-        dispatch(signInSuccess(data));
+        dispatch(signInSuccess(data.user));
         toast.success("Login successfully", {
           position: "top-right",
         });
@@ -48,7 +48,6 @@ export default function SignIn() {
       dispatch(signInFailure(error.message));
     }
   };
-  console.log(formData)
   return (
     <div className="flex items-center justify-center p-6 md:p-10">
       <div className="max-w-md w-full space-y-6">

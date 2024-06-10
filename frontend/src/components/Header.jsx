@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 import {  useSelector } from "react-redux";
 
 export default function Header() {
-  const{userLogin} =useSelector((state)=>state.user)
+  const{userLogin, currentUser} =useSelector((state)=>state.user)
   return (
     <Navbar>
       <NavbarBrand>
@@ -36,7 +36,7 @@ export default function Header() {
           <Link to="/profile">
             <Avatar
               isBordered
-              src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+              src= {currentUser.avatar || "https://i.pravatar.cc/150?u=a042581f4e29026704d" }
             />
           </Link>{" "}
         </NavbarContent>

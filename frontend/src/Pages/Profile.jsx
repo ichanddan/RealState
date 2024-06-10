@@ -1,21 +1,23 @@
 import { Avatar, Button, Card, CardHeader } from "@nextui-org/react";
 import React from "react";
 import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure} from "@nextui-org/react";
+import { useSelector } from "react-redux";
 
 
 export default function Profile() {
+  const {currentUser} = useSelector((state)=>state.user)
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
   return (
       <div className="flex flex-col items-center justify-center my-10">
         <Card className="w-full max-w-md">
           <CardHeader className="flex flex-col items-center gap-4 p-6">
-            <Avatar className="h-24 w-24">
-              <img src="/placeholder.svg" alt="@shadcn" />
-              <h1>JP</h1>
-            </Avatar>
+            <Avatar className="h-24 w-24"
+              isBordered
+              src={currentUser.avatar || "/placeholder.svg"} 
+              alt="@shadcn" />
             <div className="text-center">
-              <h2 className="text-2xl font-bold">Jared Palmer</h2>
-              <p className="text-gray-500 dark:text-gray-400">jared@acme.inc</p>
+              <h2 className="text-2xl font-bold">{currentUser.name}</h2>
+              <p className="text-gray-500 dark:text-gray-400">{currentUser.email}</p>
             </div>
           </CardHeader>
           <div className="grid gap-4 p-6">
