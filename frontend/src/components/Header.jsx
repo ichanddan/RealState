@@ -10,9 +10,10 @@ import {
 } from "@nextui-org/react";
 import { FaSearch } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import {  useSelector } from "react-redux";
 
 export default function Header() {
-  const [userLogin, setUserLogin] = useState(false);
+  const{userLogin} =useSelector((state)=>state.user)
   return (
     <Navbar>
       <NavbarBrand>
@@ -29,7 +30,7 @@ export default function Header() {
           className="max-w-xs"
         />
       </NavbarContent>
-      {userLogin == true ? (
+      {userLogin === true ? (
         <NavbarContent justify="end">
           {" "}
           <Link to="/profile">

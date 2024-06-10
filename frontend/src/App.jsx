@@ -6,12 +6,14 @@ import SignIn from "./Pages/SignIn";
 import Signup from "./Pages/Signup";
 import Profile from "./Pages/Profile";
 import Home from "./Pages/Home";
-import { store } from './Redux/store';
+import { persistor, store } from './Redux/store';
 import { Provider } from 'react-redux';
+import { PersistGate } from "redux-persist/integration/react";
 
 function App() {
   return (
     <Provider store={store}>
+    <PersistGate loading={null} persistor={persistor}>
     <BrowserRouter>
       <Header />
       <Routes>
@@ -22,6 +24,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
       </Routes>
     </BrowserRouter>
+    </PersistGate>
     </Provider>
   );
 }
