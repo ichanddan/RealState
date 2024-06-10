@@ -30,11 +30,10 @@ const Login = async (req, res) => {
       return res.status(400).json({ success: false,  message: "Invalid credentials"});
     }
     const paylod = {
-      name: user.name,
-      email: user.email,
+      name: user._id,
     }
     const token = genToken(paylod);
-    res.cookie('access_token', token, { httpOnly: true }).status(200).json({ success: true,  message: "Login successfully"})
+    res.cookie('access_token', token, { httpOnly: true }).status(200).json({ success: true,  message: "Login successfully",user})
   } catch (error) {
     res.status(500).json({  success: false,  error: error.message});
     console.log(error);
