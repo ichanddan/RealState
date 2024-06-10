@@ -6,9 +6,12 @@ import SignIn from "./Pages/SignIn";
 import Signup from "./Pages/Signup";
 import Profile from "./Pages/Profile";
 import Home from "./Pages/Home";
+import { store } from './Redux/store';
+import { Provider } from 'react-redux';
 
 function App() {
   return (
+    <Provider store={store}>
     <BrowserRouter>
       <Header />
       <Routes>
@@ -19,6 +22,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
       </Routes>
     </BrowserRouter>
+    </Provider>
   );
 }
 
