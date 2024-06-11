@@ -1,6 +1,6 @@
 import { genToken } from "../Middleware/jwt.auth.js";
 import { User } from "../Models/User.models.js";
-import bcrypt, { genSalt } from 'bcrypt'
+import bcrypt, { genSalt, hash } from 'bcrypt'
 
 const signup = async (req, res) => {
   try {
@@ -29,8 +29,9 @@ const Login = async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ success: false,  message: "Invalid credentials"});
     }
+    user.password =""
     const paylod = {
-      name: user._id,
+      id: user._id,
     }
     const token = genToken(paylod);
     res.cookie('access_token', token, { httpOnly: true }).status(200).json({ success: true,  message: "Login successfully",user})
@@ -40,4 +41,35 @@ const Login = async (req, res) => {
   }
 };
 
-export {signup, Login}
+
+const updateUser = async (req, res) => {
+  try {
+    if (req.user.id ==req.params.id) {
+       res.status(403).json({success: false, message: "You can update only your own account"});
+    }
+    if (req.body.password) {
+      req.body.password = await bcrypt.hash(req.body.password, 10);
+    }
+    const id = req.params.id
+    const updatedUser = await User.findByIdAndUpdate(id,
+      {
+        $set: {
+          name: req.body.name,
+          email: req.body.email,
+          password: req.body.password,
+          avatar: req.body.avatar,
+        },
+      },
+      { new: true }
+    );
+    const { password, ...rest } = updatedUser._doc;
+    res
+      .status(200)
+      .json({ success: true, message: "User updated", user: rest });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Internal server issue" });
+  }
+};
+
+
+export {signup, Login, updateUser}

@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 
 const veryfiyToken = (req, res, next) => {
-  const token = req.headers.authorization.split(" ")[1];
+  const token = req.cookies.access_token;
   if (!token) {
     return res.status(401).json({
       success: false,

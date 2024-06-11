@@ -15,6 +15,10 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    avatar: {
+      type: String,
+      default: "https://i.pravatar.cc/300",
+    },
   },
   { timestamps: true }
 );
