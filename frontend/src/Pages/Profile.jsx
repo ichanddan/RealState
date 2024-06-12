@@ -4,12 +4,13 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@nextui-org/react";
 import { useDispatch, useSelector } from "react-redux";
-import { profileUpdateFailure, profileUpdateStart, profileUpdateSuccess, userDeleteFailure, userDeleteStart, userDeleteSuccess } from "../Redux/user/userSlice";
+import { profileUpdateFailure, profileUpdateStart, profileUpdateSuccess, userDeleteFailure, userDeleteStart, userDeleteSuccess, userLogOutFailure, userLogOutStart, userLogOutSuccess } from "../Redux/user/userSlice";
 
 export default function Profile() {
-  const { currentUser, error } = useSelector((state) => state.user);
+  const { currentUser } = useSelector((state) => state.user);
   const { isOpen: isUpdateModalOpen, onOpen: onOpenUpdateModal, onOpenChange: onOpenChangeUpdateModal } = useDisclosure();
   const { isOpen: isDeleteModalOpen, onOpen: onOpenDeleteModal, onOpenChange: onOpenChangeDeleteModal } = useDisclosure();
+  const { isOpen: isLogOutModalOpen, onOpen: onOpenLogOutModal, onOpenChange: onOpenChangeLogOutModal } = useDisclosure();
   const [formData, setFromData] = useState([]);
   const dispatch = useDispatch();
 
@@ -71,6 +72,28 @@ export default function Profile() {
       });
     }
   };
+  const handleLogOut = async () => {
+    try {
+      dispatch(userLogOutStart());
+      const cook = await fetch("/api/v1/logout");
+      const res = await cook.json()
+      if (res.success === true) {
+        toast.success("Logout successfully", {
+          position: "top-right",
+        });
+        setTimeout(() => {
+          dispatch(userLogOutSuccess(res));
+        }, 2000);
+      }
+    } catch (error) {
+      toast.error("Logout faild", {
+        position: "top-right",
+      });
+      setTimeout(() => {
+        dispatch(userLogOutFailure(error.message));
+      }, 2000);
+    }
+  };
 
   return (
     <div className="flex flex-col items-center justify-center my-10">
@@ -91,10 +114,7 @@ export default function Profile() {
           <Button variant="outline" className="border-[1px]" onPress={onOpenUpdateModal}>Update Profile</Button>
           <div className="flex items-center justify-between">
             <Button variant="destructive" className="text-red-500" onPress={onOpenDeleteModal}>Delete Account</Button>
-            <Button variant="outline">Log Out</Button>
-          </div>
-          <div className="flex items-center justify-center">
-            <p>{error ? error : ''}</p>
+            <Button variant="outline" onClick={onOpenLogOutModal} >Log Out</Button>
           </div>
         </div>
       </Card>
@@ -167,6 +187,26 @@ export default function Profile() {
         </ModalContent>
       </Modal>
 
+      <Modal isOpen={isLogOutModalOpen} onOpenChange={onOpenChangeLogOutModal}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">Confirm Logout</ModalHeader>
+              <ModalBody>
+                <p>Are you sure you want to logout your account?</p>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={onClose}>
+                  Cancel
+                </Button>
+                <Button color="primary" onPress={() => { onClose(); handleLogOut(); }}>
+                  Confirm
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
       <ToastContainer />
     </div>
   );
