@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@nextui-org/react";
 import { useDispatch, useSelector } from "react-redux";
 import { profileUpdateFailure, profileUpdateStart, profileUpdateSuccess, userDeleteFailure, userDeleteStart, userDeleteSuccess, userLogOutFailure, userLogOutStart, userLogOutSuccess } from "../Redux/user/userSlice";
+import { useNavigate } from "react-router-dom";
 
 export default function Profile() {
   const { currentUser } = useSelector((state) => state.user);
@@ -13,6 +14,7 @@ export default function Profile() {
   const { isOpen: isLogOutModalOpen, onOpen: onOpenLogOutModal, onOpenChange: onOpenChangeLogOutModal } = useDisclosure();
   const [formData, setFromData] = useState([]);
   const dispatch = useDispatch();
+  const Navigate = useNavigate()
 
   const handleChange = (e) => {
     setFromData({
@@ -112,6 +114,7 @@ export default function Profile() {
         </CardHeader>
         <div className="grid gap-4 p-6">
           <Button variant="outline" className="border-[1px]" onPress={onOpenUpdateModal}>Update Profile</Button>
+          <Button variant="outline" className="border-[1px] bg-green-600 text-white" onClick={()=>{Navigate("/list-product")}} >Create Listing</Button>
           <div className="flex items-center justify-between">
             <Button variant="destructive" className="text-red-500" onPress={onOpenDeleteModal}>Delete Account</Button>
             <Button variant="outline" onClick={onOpenLogOutModal} >Log Out</Button>
