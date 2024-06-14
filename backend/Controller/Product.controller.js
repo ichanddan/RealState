@@ -11,4 +11,13 @@ const listProduct = async (req, res) =>{
     }
 }
 
-export {listProduct}
+const getlistproduct = async (req, res) =>{
+  try {
+    const productList = await ListProduct.find();
+    res.status(200).json({ success: true, data: productList });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "internal server problem" });
+  }
+}
+
+export {listProduct, getlistproduct}
