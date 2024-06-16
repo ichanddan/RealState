@@ -8,7 +8,7 @@ export default function Product() {
   const { currentUser } = useSelector((state) => state.user);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    imageUrls: [],
+    imageUrls: "",
     name: "",
     description: "",
     address: "",
@@ -76,6 +76,12 @@ export default function Product() {
           navigate("/profile");
         }, 2000);
       }
+      if (data.success=== false) {
+        toast.error("Product list faild", {
+          position: "top-right",
+        });
+        
+      }
       console.log(data)
     } catch (error) {
       toast.error("Product list faild", {
@@ -88,7 +94,7 @@ export default function Product() {
       <h1 className="text-3xl font-semibold text-center my-7">
         Create a Listing
       </h1>
-      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4">
+      <form onSubmit={handleSubmit} method="POST" className="flex flex-col sm:flex-row gap-4">
         <div className="flex flex-col gap-4 flex-1">
           <input
             type="text"
@@ -244,10 +250,11 @@ export default function Product() {
         <div className="flex flex-col flex-1 gap-4">
           <div className="flex gap-4">
             <input
+            type="text"
               placeholder="Image link"
               onChange={handleChange}
               className="p-3 border border-gray-300 rounded w-full"
-              id="images"
+              id="imageUrls"
             />
           </div>
           <button className="p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80">
