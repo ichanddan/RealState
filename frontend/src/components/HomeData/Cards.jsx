@@ -8,7 +8,7 @@ export default function Cards() {
     const getData = async () => {
       const res = await fetch("/api/v1/listproduct");
       const data = await res.json();
-      setData(data.data);
+      setData(data?.data);
     };
     getData();
   }, []);
@@ -38,21 +38,24 @@ export default function Cards() {
                   className="object-cover w-full h-64"
                 />
                 <div className="bg-white p-4 dark:bg-gray-950">
-                  <h3 className="font-bold text-xl">{e.name}</h3>
-                  <p className="text-sm text-gray-500">{e.address}</p>
+                  <div className="flex items-center justify-between">
+                  <h3 className="font-bold text-xl">{e?.name}</h3>
+                  <h3 className="text-red-500 font-bold capitalize">{`for-${e?.type}`}</h3>
+                  </div>
+                  <p className="text-sm text-gray-500">{e?.address}</p>
                   <p className="text-sm/relaxed">
-                    {e.description.substring(0, 78)}
+                    {e?.description.substring(0, 78)}
                   </p>
                   <div className="flex items-center justify-between mt-4">
-                    <div className="font-semibold text-lg">
+                    <div className="font-semibold text-lg capitalize">
                       ₹{" "}
-                      {e.type === "rent"
-                        ? `${e.regularPrice} /month`
-                        : `${e.regularPrice}`}
+                      {e?.type === "rent"
+                        ? `${e?.regularPrice} /month`
+                        : `${e?.regularPrice}`}
                     </div>
                     <div className="flex items-center gap-1 text-sm text-gray-500">
                       <FaBed className="w-4 h-4" />
-                      <span>{e.bedrooms}</span>
+                      <span>{e?.bedrooms}</span>
                     </div>
                   </div>
                 </div>
