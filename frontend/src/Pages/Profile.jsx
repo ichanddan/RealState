@@ -9,17 +9,16 @@ import { useNavigate } from "react-router-dom";
 
 export default function Profile() {
   const { currentUser } = useSelector((state) => state.user);
-  const { isOpen: isUpdateModalOpen, onOpen: onOpenUpdateModal, onOpenChange: onOpenChangeUpdateModal } = useDisclosure();
-  const { isOpen: isDeleteModalOpen, onOpen: onOpenDeleteModal, onOpenChange: onOpenChangeDeleteModal } = useDisclosure();
-  const { isOpen: isLogOutModalOpen, onOpen: onOpenLogOutModal, onOpenChange: onOpenChangeLogOutModal } = useDisclosure();
-  const [formData, setFromData] = useState([]);
+  const { isOpen: isUpdateModalOpen, onOpen: onOpenUpdateModal, onClose: onCloseUpdateModal } = useDisclosure();
+  const { isOpen: isDeleteModalOpen, onOpen: onOpenDeleteModal, onClose: onCloseDeleteModal } = useDisclosure();
+  const { isOpen: isLogOutModalOpen, onOpen: onOpenLogOutModal, onClose: onCloseLogOutModal } = useDisclosure();
+  const [formData, setFormData] = useState({});
   const [listUser, setListUser] = useState([]);
-  const [id, setId] = useState("");
   const dispatch = useDispatch();
-  const Navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFromData({
+    setFormData({
       ...formData,
       [e.target.id]: e.target.value,
     });
@@ -50,6 +49,7 @@ export default function Profile() {
       });
     }
   };
+
   const handleDeleteUser = async () => {
     try {
       dispatch(userDeleteStart());
@@ -64,9 +64,9 @@ export default function Profile() {
         toast.success("User deleted successfully", {
           position: "top-right",
         });
-        setTimeout(()=>{
+        setTimeout(() => {
           dispatch(userDeleteSuccess(data));
-        },2000)
+        }, 2000);
       }
     } catch (error) {
       dispatch(userDeleteFailure(error.message));
@@ -75,21 +75,22 @@ export default function Profile() {
       });
     }
   };
+
   const handleLogOut = async () => {
     try {
       dispatch(userLogOutStart());
-      const cook = await fetch("/api/v1/logout");
-      const res = await cook.json()
-      if (res.success === true) {
+      const res = await fetch("/api/v1/logout");
+      const data = await res.json();
+      if (data.success === true) {
         toast.success("Logout successfully", {
           position: "top-right",
         });
         setTimeout(() => {
-          dispatch(userLogOutSuccess(res));
+          dispatch(userLogOutSuccess(data));
         }, 2000);
       }
     } catch (error) {
-      toast.error("Logout faild", {
+      toast.error("Logout failed", {
         position: "top-right",
       });
       setTimeout(() => {
@@ -97,44 +98,44 @@ export default function Profile() {
       }, 2000);
     }
   };
-  useEffect(()=>{
-    const getData = async ()=>{
-      const res = await fetch(`/api/v1/listproduct/${currentUser._id}`)
-      const data = await res.json()
-      if(data.success===true){
-        setListUser(data.data)
+
+  useEffect(() => {
+    const getData = async () => {
+      const res = await fetch(`/api/v1/listproduct/${currentUser._id}`);
+      const data = await res.json();
+      if (data.success === true) {
+        setListUser(data.data);
       }
-    }
-    getData()
-  },[listUser])
-const handleDeleteProduct = async () => {
-  try {
-      const res = await fetch(`/api/v1/listproduct/delete/${id}`,{
-        method:"DELETE",
-        headers:{
-          "Content-Type":"application/json"
+    };
+    getData();
+  }, []);
+
+  const handleDeleteProduct = async (id) => {
+    try {
+      const res = await fetch(`/api/v1/listproduct/delete/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json"
         }
       });
       const data = await res.json();
-      if(data.success===true){
+      if (data.success === true) {
         toast.success("Product deleted successfully", {
           position: "top-right",
         });
-      }
-      else{
-        toast.error("Product not delete", {
+        setListUser(listUser.filter(user => user._id !== id));
+      } else {
+        toast.error("Product not deleted", {
           position: "top-right",
-        })
+        });
       }
-  } catch (error) {
-    toast.error("Product not delete", {
-      position: "top-right",
-    })
-  }
+    } catch (error) {
+      toast.error("Product not deleted", {
+        position: "top-right",
+      });
+    }
+  };
 
-};
-
-console.log(id)
   return (
     <div className="flex flex-col items-center justify-center my-10">
       <Card className="w-full max-w-md">
@@ -152,36 +153,36 @@ console.log(id)
         </CardHeader>
         <div className="grid gap-4 p-6">
           <Button variant="outline" className="border-[1px]" onPress={onOpenUpdateModal}>Update Profile</Button>
-          <Button variant="outline" className="border-[1px] bg-green-600 text-white" onClick={()=>{Navigate("/list-product")}} >Create Listing</Button>
+          <Button variant="outline" className="border-[1px] bg-green-600 text-white" onClick={() => { navigate("/list-product") }} >Create Listing</Button>
           <div className="flex items-center justify-between">
             <Button variant="destructive" className="text-red-500" onPress={onOpenDeleteModal}>Delete Account</Button>
-            <Button variant="outline" onClick={onOpenLogOutModal} >Log Out</Button>
+            <Button variant="outline" onPress={onOpenLogOutModal}>Log Out</Button>
           </div>
-          
-            {
-              listUser.map((e, i) => {
-                return (
-                  <div key={i} className="flex items-center text-left justify-between w-[94%]">
-                    <Avatar
-                      className="h-12 w-12"
-                      isBordered
-                      src={e?.imageUrls}
-                      alt="@shadcn"
-                    />
-                    <div className="flex flex-col gap-1">
-                      <p className="text-gray-500 dark:text-gray-400">{e.name.substring(0,20)}</p>
-                    </div>
-                    <div>
-                      <button onClick={ ()=>{setId(e?._id); handleDeleteProduct()} } className="text-red-500">Delete</button>
-                    </div>
+
+          {
+            listUser.map((e, i) => {
+              return (
+                <div key={i} className="flex items-center text-left justify-between w-[94%]">
+                  <Avatar
+                    className="h-12 w-12"
+                    isBordered
+                    src={e?.imageUrls}
+                    alt="@shadcn"
+                  />
+                  <div className="flex flex-col gap-1">
+                    <p className="text-gray-500 dark:text-gray-400">{e.name.substring(0, 20)}</p>
                   </div>
-                )
-              })
-            }
+                  <div>
+                    <button onClick={() => handleDeleteProduct(e._id)} className="text-red-500">Delete</button>
+                  </div>
+                </div>
+              )
+            })
+          }
         </div>
       </Card>
 
-      <Modal isOpen={isUpdateModalOpen} onOpenChange={onOpenChangeUpdateModal}>
+      <Modal isOpen={isUpdateModalOpen} onOpenChange={onCloseUpdateModal}>
         <ModalContent>
           {(onClose) => (
             <>
@@ -228,7 +229,7 @@ console.log(id)
         </ModalContent>
       </Modal>
 
-      <Modal isOpen={isDeleteModalOpen} onOpenChange={onOpenChangeDeleteModal}>
+      <Modal isOpen={isDeleteModalOpen} onOpenChange={onCloseDeleteModal}>
         <ModalContent>
           {(onClose) => (
             <>
@@ -249,7 +250,7 @@ console.log(id)
         </ModalContent>
       </Modal>
 
-      <Modal isOpen={isLogOutModalOpen} onOpenChange={onOpenChangeLogOutModal}>
+      <Modal isOpen={isLogOutModalOpen} onOpenChange={onCloseLogOutModal}>
         <ModalContent>
           {(onClose) => (
             <>
