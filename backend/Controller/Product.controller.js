@@ -45,4 +45,14 @@ const deleteProduct = async (req, res) =>{
   }
 }
 
-export {listProduct, getlistproduct, userListProduct, deleteProduct}
+const getOneProduct = async (req, res) =>{
+  const id = req.params.id;
+  try {
+    const userData = await ListProduct.findById(id);
+    res.status(200).json({ success: true, data: userData });
+  } catch (error) {
+    res.status(500).json({ success: false, message:"internal server isuss" });  
+  }
+}
+
+export {listProduct, getlistproduct, userListProduct, deleteProduct, getOneProduct}
