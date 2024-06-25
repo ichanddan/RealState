@@ -1,25 +1,71 @@
-import { Button } from "@nextui-org/react";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Input, Button, Textarea } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { MdBathroom } from "react-icons/md";
-import { BsFillSignNoParkingFill } from "react-icons/bs";
+import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+
 
 
 
 export default function ProductList() {
+  const Navigate = useNavigate()
   const [listUser, setListUser] = useState([]);
+  const {currentUser} = useSelector((state)=>state.user)
   const { id } = useParams();
+  const { isOpen: isUpdateModalOpen, onOpen: onOpenUpdateModal, onClose: onCloseUpdateModal } = useDisclosure();
+  const [data, setData] = useState(
+    {
+      name:currentUser?.name,
+      email:currentUser?.email,
+      price: '',
+      sellOrRent: '',
+      title: ''
+    }
+  )
+
   useEffect(() => {
     const getData = async () => {
       const res = await fetch(`/api/v1//productlist/${id}`);
       const data = await res.json();
       if (data.success === true) {
         setListUser(data.data);
+        setData((prev)=>({
+          ...prev ,price:data.data.regularPrice,
+          sellOrRent:data.data.type,
+          title:data.data.name
+        }))
       }
     };
     getData();
   }, []);
-  console.log(listUser);
+  const handleChange=(e)=>{
+    setData({
+     ...data,
+      [e.target.id]:e.target.value
+    })
+  }
+  const handleSubmit= async ()=>{
+    const submitData = await fetch('/api/v1/contect',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json'
+      },
+      body:JSON.stringify(data)
+    }) 
+    if (submitData.status==200) {
+      toast.success("Your meassage send seller",{
+        position:"top-right"
+      })
+    }else{
+      toast.error("Plase login",{
+        position:"top-right"
+      })
+      setTimeout(()=>{
+        Navigate("/login")
+      },2000)
+    }
+  }
   return (
     <div>
       <div>
@@ -43,7 +89,7 @@ export default function ProductList() {
             {listUser?.type == "sale" ? "Sale" : "Rent"}
           </Button>
           <Button className="px-20 py-1.5 rounded text-white" color="success">
-            {listUser?.regularPrice}
+          ₹ {listUser?.regularPrice}
           </Button>
         </div>
         <p className="mt-4">
@@ -52,14 +98,69 @@ export default function ProductList() {
         <div className="flex items-center gap-5 mt-2">
           <div>Beds: {listUser?.bedrooms}</div>
           <div>Bathroom: {listUser?.bathrooms}</div>
-          <div>Parking: {listUser?.parking ==true ? "Parking is available" :  "No Parking available"}</div>
-          <div>{listUser?.furnished ==true ? "Furnished" :  "Not Furnished"}</div>
+          <div>
+            Parking:{" "}
+            {listUser?.parking == true
+              ? "Parking is available"
+              : "No Parking available"}
+          </div>
+          <div>
+            {listUser?.furnished == true ? "Furnished" : "Not Furnished"}
+          </div>
         </div>
-        <Button className="w-full mt-5" color="success">
-          Contect Deller
+        <Button
+          onPress={onOpenUpdateModal}
+          className="w-full mt-5"
+          color="success"
+        >
+          Enquire Now
         </Button>
       </div>
-    </div> 
+      <Modal isOpen={isUpdateModalOpen} onOpenChange={onCloseUpdateModal}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">Send meassage</ModalHeader>
+              <ModalBody>
+                <Input
+                  isRequired
+                  id="phone"
+                  label="Number"
+                  type="number"
+                  labelPlacement="outside"
+                  placeholder="Enter your number"
+                  className="full"
+                  onChange={handleChange}
+                />
+                <Textarea
+                  isRequired
+                  id="message"
+                  label="Description"
+                  labelPlacement="outside"
+                  placeholder="Enter your description"
+                  className="full"
+                  onChange={handleChange}
+                />
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={onClose}>
+                  Close
+                </Button>
+                <Button
+                  color="primary"
+                  onPress={onClose}
+                  onClick={handleSubmit}
+                >
+                  Send
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+      <ToastContainer />
+
+    </div>
   );
 }
 
