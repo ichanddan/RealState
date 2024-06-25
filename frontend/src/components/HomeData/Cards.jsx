@@ -22,14 +22,8 @@ export default function Cards() {
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-5 gap-6 p-2 md:p-1">
           {data.map((e, i) => {
             return (
-              <div className="relative group overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-transform duration-300 ease-in-out hover:-translate-y-2">
-                <Link
-                  href="#"
-                  className="absolute inset-0 z-10"
-                  prefetch={false}
-                >
-                  <span className="sr-only">View</span>
-                </Link>
+              <Link key={i} to={`/list-product/${e._id}`} >
+               <div className="relative group overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-transform duration-300 ease-in-out hover:-translate-y-2">
                 <img
                   src={e.imageUrls}
                   alt="Cozy Cabin in the Woods"
@@ -60,6 +54,7 @@ export default function Cards() {
                   </div>
                 </div>
               </div>
+              </Link>
             );
           })}
         </section>

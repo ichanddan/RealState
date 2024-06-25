@@ -11,6 +11,7 @@ import { Provider } from 'react-redux';
 import { PersistGate } from "redux-persist/integration/react";
 import PrivateRoute from "./components/PrivateRoute";
 import Product from "./Pages/Product";
+import ProductList from "./Pages/ProductList";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/list-product" element={<Product />} />
         </Route>
+        <Route path="/list-product/:id" element={<ProductList />} />
       </Routes>
     </BrowserRouter>
     </PersistGate>
