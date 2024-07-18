@@ -4,6 +4,11 @@ import { Link } from "react-router-dom";
 
 export default function Cards() {
   const [data, setData] = useState([]);
+  const [currentPage, setCurentPage]= useState(1)
+  const itemsPerPage = 6;
+  const lastIndex = currentPage * itemsPerPage;
+  const firstIndex = lastIndex - itemsPerPage;
+  const currentItems = data.slice(firstIndex, lastIndex);
   useState(() => {
     const getData = async () => {
       const res = await fetch("/api/v1/listproduct");
@@ -20,7 +25,7 @@ export default function Cards() {
           Show more offers
         </Link>
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-5 gap-6 p-2 md:p-1">
-          {data.map((e, i) => {
+          {data && currentItems.map((e, i) => {
             return (
               <Link key={i} to={`/list-product/${e._id}`} >
                <div className="relative group overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-transform duration-300 ease-in-out hover:-translate-y-2">
