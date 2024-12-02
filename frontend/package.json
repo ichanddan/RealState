@@ -13,6 +13,7 @@
     "@nextui-org/checkbox": "^2.1.1",
     "@nextui-org/input": "^2.2.1",
     "@nextui-org/react": "^2.4.1",
+    "@react-stately/collections": "^3.12.0",
     "@reduxjs/toolkit": "^2.2.5",
     "framer-motion": "^11.2.10",
     "react": "^18.2.0",
