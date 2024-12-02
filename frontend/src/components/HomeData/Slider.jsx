@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
 import { FaArrowAltCircleRight } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import baseUrl from "../../envarment";
 
 
 export default function () {
   const [slides, setSlides] =useState([])
   useEffect(() => {
     const getData = async () => {
-      const res = await fetch("/api/v1/listproduct");
+      const res = await fetch(baseUrl+"/api/v1/listproduct");
       const data = await res.json();
       if (data.data.length > 0) {
         const arrayLength = data.data.length;

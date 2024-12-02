@@ -22,7 +22,7 @@ export default function SignIn() {
     e.preventDefault();
       try {
         dispatch(signInStart())
-        const res = await fetch("/api/v1/login", {
+        const res = await fetch(baseUrl+"/api/v1/login", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

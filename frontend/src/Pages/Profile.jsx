@@ -6,6 +6,7 @@ import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure
 import { useDispatch, useSelector } from "react-redux";
 import { profileUpdateFailure, profileUpdateStart, profileUpdateSuccess, userDeleteFailure, userDeleteStart, userDeleteSuccess, userLogOutFailure, userLogOutStart, userLogOutSuccess } from "../Redux/user/userSlice";
 import { useNavigate } from "react-router-dom";
+import baseUrl from "../envarment";
 
 export default function Profile() {
   const { currentUser } = useSelector((state) => state.user);
@@ -28,7 +29,7 @@ export default function Profile() {
     e.preventDefault();
     try {
       dispatch(profileUpdateStart());
-      const res = await fetch(`/api/v1/update/${currentUser._id}`, {
+      const res = await fetch(baseUrl`/api/v1/update/${currentUser._id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -53,7 +54,7 @@ export default function Profile() {
   const handleDeleteUser = async () => {
     try {
       dispatch(userDeleteStart());
-      const res = await fetch(`/api/v1/delete/${currentUser._id}`, {
+      const res = await fetch(baseUrl`/api/v1/delete/${currentUser._id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -79,7 +80,7 @@ export default function Profile() {
   const handleLogOut = async () => {
     try {
       dispatch(userLogOutStart());
-      const res = await fetch("/api/v1/logout");
+      const res = await fetch(baseUrl+"/api/v1/logout");
       const data = await res.json();
       if (data.success === true) {
         toast.success("Logout successfully", {
@@ -101,7 +102,7 @@ export default function Profile() {
 
   useEffect(() => {
     const getData = async () => {
-      const res = await fetch(`/api/v1/listproduct/${currentUser._id}`);
+      const res = await fetch(baseUrl`/api/v1/listproduct/${currentUser._id}`);
       const data = await res.json();
       if (data.success === true) {
         setListUser(data.data);
@@ -112,7 +113,7 @@ export default function Profile() {
 
   const handleDeleteProduct = async (id) => {
     try {
-      const res = await fetch(`/api/v1/listproduct/delete/${id}`, {
+      const res = await fetch(baseUrl`/api/v1/listproduct/delete/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json"

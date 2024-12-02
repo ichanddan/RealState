@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import baseUrl from "../envarment";
 
 export default function Product() {
   const { currentUser } = useSelector((state) => state.user);
@@ -57,7 +58,7 @@ export default function Product() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("/api/v1/listproduct", {
+      const res = await fetch(baseUrl+"/api/v1/listproduct", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

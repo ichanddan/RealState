@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FaBed } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import baseUrl from "../../envarment";
 
 export default function Cards() {
   const [data, setData] = useState([]);
@@ -11,7 +12,7 @@ export default function Cards() {
   const currentItems = data.slice(firstIndex, lastIndex);
   useState(() => {
     const getData = async () => {
-      const res = await fetch("/api/v1/listproduct");
+      const res = await fetch(baseUrl+"/api/v1/listproduct");
       const data = await res.json();
       setData(data?.data);
     };

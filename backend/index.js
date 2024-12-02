@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 const corsOptions = {
-  origin: "https://real-state-six-neon.vercel.app",
+  origin: ["https://real-state-six-neon.vercel.app","http://localhost:5173"],
   methods: ["GET", "POST", "PUT", "DELETE"], // Specify allowed HTTP methods
   credentials: true, // Enable this if your app uses cookies or authentication
 };

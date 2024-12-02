@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import baseUrl from "../envarment";
 
 
 
@@ -26,7 +27,7 @@ export default function ProductList() {
 
   useEffect(() => {
     const getData = async () => {
-      const res = await fetch(`/api/v1//productlist/${id}`);
+      const res = await fetch(baseUrl`/api/v1//productlist/${id}`);
       const data = await res.json();
       if (data.success === true) {
         setListUser(data.data);
@@ -46,7 +47,7 @@ export default function ProductList() {
     })
   }
   const handleSubmit= async ()=>{
-    const submitData = await fetch('/api/v1/contect',{
+    const submitData = await fetch(baseUrl+'/api/v1/contect',{
       method:'POST',
       headers:{
         'Content-Type':'application/json'
